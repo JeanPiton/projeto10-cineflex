@@ -1,26 +1,72 @@
 import styled from "styled-components"
+import axios from "axios"
+import { useState,useEffect } from "react"
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Seat from "../../components/Seat";
 
 export default function SeatsPage() {
+    const params = useParams();
+    const navigate = useNavigate();
+    const [session,setSession] = useState(null);
+    const [selected,setSelected] = useState([]);
+    const [name,setName] = useState();
+    const [cpf,setCpf] = useState();
+
+    useEffect(()=>{
+        const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`);
+        request.then(r => {
+            console.log(r.data);
+            setSession(r.data);
+        })
+    },[]);
+
+    const nameChange = event => {
+        setName(event.target.value);
+    }
+
+    const cpfChange = event => {
+        setCpf(event.target.value);
+    }
+
+    function Select(id){
+        let list = [...selected];
+        if(list.includes(id)){
+            list = selected.filter(e=>e!=id);
+        }else{
+            list.push(id);
+        }
+        setSelected(list);
+    }
+
+    function Reserve(){
+        const message = {ids:selected, name:name, cpf:cpf}
+        console.log(message);
+        const promisse = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", message)
+        promisse.then(response => {
+            console.log(response);
+            navigate("/sucesso");
+        })
+    }
+
+    if(session === null){
+        return <p>loading</p>;
+    }
 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {session.seats.map(e=><Seat name={e.name} available={e.isAvailable} key={e.id} id={e.id} select={selected.includes(e.id)?true:false} func={Select}/>)}
             </SeatsContainer>
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle $selected/>
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle $avaible/>
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
@@ -31,21 +77,21 @@ export default function SeatsPage() {
 
             <FormContainer>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <input placeholder="Digite seu nome..." onChange={nameChange} />
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <input placeholder="Digite seu CPF..." onChange={cpfChange}/>
 
-                <button>Reservar Assento(s)</button>
+                <button onClick={Reserve}>Reservar Assento(s)</button>
             </FormContainer>
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={session.movie.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{session.movie.title}</p>
+                    <p>{session.day.weekday} - {session.name}</p>
                 </div>
             </FooterContainer>
 
@@ -96,8 +142,9 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid;
+    border-color: ${props=>props.$selected?"#0E7D71":props.$avaible?"blue":"#F7C52B"};
+    background-color: ${props=>props.$selected?"#1AAE9E":props.$avaible?"lightblue":"#FBE192"};
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -111,19 +158,6 @@ const CaptionItem = styled.div`
     flex-direction: column;
     align-items: center;
     font-size: 12px;
-`
-const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
-    height: 25px;
-    width: 25px;
-    border-radius: 25px;
-    font-family: 'Roboto';
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 5px 3px;
 `
 const FooterContainer = styled.div`
     width: 100%;
