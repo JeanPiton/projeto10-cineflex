@@ -4,7 +4,7 @@ import { useState,useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Seat from "../../components/Seat";
 
-export default function SeatsPage() {
+export default function SeatsPage(props) {
     const params = useParams();
     const navigate = useNavigate();
     const [session,setSession] = useState(null);
@@ -39,11 +39,12 @@ export default function SeatsPage() {
     }
 
     function Reserve(){
-        const message = {ids:selected, name:name, cpf:cpf}
+        const message = {ids:selected, name, cpf}
         console.log(message);
         const promisse = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", message)
         promisse.then(response => {
             console.log(response);
+            props.func({movie:session.movie.title, day:session.day.date, time:session.name, seats:selected, name, cpf});
             navigate("/sucesso");
         })
     }
