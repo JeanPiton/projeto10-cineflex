@@ -5,10 +5,10 @@ export default function Sessions(props){
     const times = [...props.times]
 
     return(
-        <SessionContainer>
+        <SessionContainer data-test="movie-day">
             {props.weekday} - {props.date}
             <ButtonsContainer>
-                {times.map(e=> <Link to={`/assentos/${e.id}`} key={e.id}><button>{e.name}</button></Link>)}
+                {times.map(e=> <Link to={`/assentos/${e.id}`} key={e.id}><button data-test="showtime">{e.name}</button></Link>)}
             </ButtonsContainer>
         </SessionContainer>
     );

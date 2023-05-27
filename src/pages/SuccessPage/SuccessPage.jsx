@@ -6,24 +6,24 @@ export default function SuccessPage(props) {
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
-            <TextContainer>
+            <TextContainer data-test="movie-info">
                 <strong><p>Filme e sessão</p></strong>
                 <p>{props.order.movie}</p>
                 <p>{props.order.day} - {props.order.time}</p>
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="seats-info">
                 <strong><p>Ingressos</p></strong>
                 {props.order.seats.map(e=><p key={e}>Assento {e}</p>)}
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="client-info">
                 <strong><p>Comprador</p></strong>
                 <p>Nome: {props.order.name}</p>
                 <p>CPF: {props.order.cpf}</p>
             </TextContainer>
 
-            <Link to="/"><button>Voltar para Home</button></Link>
+            <Link to="/"><button data-test="go-home-btn">Voltar para Home</button></Link>
         </PageContainer>
     )
 }

@@ -9,8 +9,8 @@ export default function SeatsPage(props) {
     const navigate = useNavigate();
     const [session,setSession] = useState(null);
     const [selected,setSelected] = useState([]);
-    const [name,setName] = useState();
-    const [cpf,setCpf] = useState();
+    const [name,setName] = useState("");
+    const [cpf,setCpf] = useState("");
 
     useEffect(()=>{
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`);
@@ -39,12 +39,14 @@ export default function SeatsPage(props) {
     }
 
     function Reserve(){
-        const message = {ids:selected, name, cpf}
+        const message = {ids:selected, name, cpf};
+        const seatIds = selected.map(e=>session.seats.findIndex(s=>s.id==e));
+        const seatName = seatIds.map(e=>session.seats[e].name);
         console.log(message);
         const promisse = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", message)
         promisse.then(response => {
             console.log(response);
-            props.func({movie:session.movie.title, day:session.day.date, time:session.name, seats:selected, name, cpf});
+            props.func({movie:session.movie.title, day:session.day.date, time:session.name, seats:seatName, name, cpf});
             navigate("/sucesso");
         })
     }
@@ -78,15 +80,15 @@ export default function SeatsPage(props) {
 
             <FormContainer>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." onChange={nameChange} />
+                <input placeholder="Digite seu nome..." value={name} onChange={nameChange}  data-test="client-name"/>
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." onChange={cpfChange}/>
+                <input placeholder="Digite seu CPF..." onChange={cpfChange} value={cpf} data-test="client-cpf"/>
 
-                <button onClick={Reserve}>Reservar Assento(s)</button>
+                <button onClick={Reserve} data-test="book-seat-btn">Reservar Assento(s)</button>
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={session.movie.posterURL} alt="poster" />
                 </div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Movie(props){
     return(
-        <MovieContainer>
+        <MovieContainer data-test="movie">
             <Link to={`sessoes/${props.id}`}>
                 <img src={props.src}/>
             </Link>

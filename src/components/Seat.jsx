@@ -11,7 +11,7 @@ export default function Seat(props){
     }
 
     return(
-        <SeatItem $avaible={props.available} $selected={props.select} onClick={()=>Selected()}>
+        <SeatItem $avaible={props.available} $selected={props.select} onClick={()=>Selected()} data-test="seat">
             {props.name}
         </SeatItem>
     );
