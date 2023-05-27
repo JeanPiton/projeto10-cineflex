@@ -56,5 +56,6 @@ const NavContainer = styled.div`
 `
 const BackButton = styled.div`
     width: 70px;
+    margin: 0 20px;
     visibility: ${props=>props.$path==""?"hidden":"visible"};
 `
