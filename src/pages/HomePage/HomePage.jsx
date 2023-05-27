@@ -3,11 +3,12 @@ import axios from "axios"
 import { useState,useEffect } from "react"
 import Movie from '../../components/Movie'
 
-export default function HomePage() {
+export default function HomePage(props) {
     const [movies,setMovies] = useState([]);
 
     useEffect(()=>{
         const request = axios.get('https://mock-api.driven.com.br/api/v8/cineflex/movies');
+        props.changePath("");
         request.then(r =>{
             setMovies(r.data);
         });

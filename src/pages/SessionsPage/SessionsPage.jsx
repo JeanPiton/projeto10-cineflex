@@ -4,11 +4,12 @@ import { useState,useEffect } from "react"
 import { Link, useParams } from "react-router-dom";
 import Sessions from "../../components/Sessions";
 
-export default function SessionsPage() {
+export default function SessionsPage(props) {
     const [sessions,setSessions] = useState(null);
     const params = useParams();
 
     useEffect(()=>{
+        props.changePath("/");
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${params.idFilme}/showtimes`);
         request.then(r => {
             console.log(r.data);

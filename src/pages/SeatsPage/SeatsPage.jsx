@@ -13,6 +13,7 @@ export default function SeatsPage(props) {
     const [cpf,setCpf] = useState("");
 
     useEffect(()=>{
+        props.changePath(`/sessoes/${props.page}`);
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`);
         request.then(r => {
             console.log(r.data);
